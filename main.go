@@ -114,11 +114,40 @@ func run() error {
 		"kubectl get pods,events",
 	))
 
-	r.Step(S(
-		"If we now try to remove the artifact image, then CRI-O",
+	r.StepCanFail(S(
+		"If we now try to remove the artifact, then CRI-O",
 		"will block that and mention the mounted reference",
 	), S(
 		"sudo crictl rmi quay.io/saschagrunert/artifact:v1",
+	))
+
+	r.Step(S(
+		"A work in progress version of crictl is able to utilize",
+		"the new CRI API, which we can see in the set `mountRef`",
+	), S(
+		"sudo ./crictl inspecti quay.io/saschagrunert/artifact:v1 | jq .",
+	))
+
+	r.Step(S(
+		"crictl will be able to pull an OCI object and indicate that",
+		"it should get mounted",
+	), S(
+		"sudo ./crictl pull --mount quay.io/saschagrunert/artifact:v1",
+	))
+
+	r.Step(nil, S(
+		"sudo ls -la (sudo ./crictl inspecti quay.io/saschagrunert/artifact:v1 | jq -r .status.mountRef)",
+	))
+
+	r.Step(S(
+		"This also works for any other container image and",
+		"opens up many new use cases for Kubernetes",
+	), S(
+		"sudo ./crictl pull --mount alpine",
+	))
+
+	r.Step(nil, S(
+		"sudo ls -la (sudo ./crictl inspecti alpine | jq -r .status.mountRef)",
 	))
 
 	return r.RunWithOptions(Options{Shell: "fish"})
