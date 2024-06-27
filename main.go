@@ -34,7 +34,7 @@ func run() error {
 	))
 
 	r.Step(S(
-		"And untar the layer",
+		"And extract the layer",
 	), S(
 		"mkdir -p artifact &&",
 		"tar xf layer.tar -C artifact",
