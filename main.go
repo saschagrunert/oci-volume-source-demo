@@ -121,9 +121,5 @@ func run() error {
 		"sudo crictl rmi quay.io/saschagrunert/artifact:v1",
 	))
 
-	return r.RunWithOptions(Options{
-		Immediate: true,
-		Shell:     "fish",
-	})
-
+	return r.RunWithOptions(Options{Shell: "fish"})
 }
